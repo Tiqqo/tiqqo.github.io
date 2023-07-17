@@ -22,7 +22,7 @@
       text-align: center;
       padding: 14px 16px;
       text-decoration: none;
-      margin: 0 10px; /* Hier kannst du den Wert anpassen */
+      margin: 0 10px;
     }
     
     .navbar a:hover {
@@ -39,18 +39,43 @@
 <body>
   <!-- Navigationsmenü -->
   <div class="navbar">
-    <a href="seite1.html">Geldwäsche-Rechner</a>
-    <a href="seite2.html">Kokain-Rechner</a>
-    <a href="seite3.html">Luftverkauf-Timer</a>
-    <a href="seite4.html">Seite 4</a>
-    <a href="seite5.html">Seite 5</a>
+    <a href="#" onclick="loadContent('seite1')">Seite 1</a>
+    <a href="#" onclick="loadContent('seite2')">Seite 2</a>
+    <a href="#" onclick="loadContent('seite3')">Seite 3</a>
+    <a href="#" onclick="loadContent('seite4')">Seite 4</a>
+    <a href="#" onclick="loadContent('seite5')">Seite 5</a>
   </div>
   
   <!-- Seiteninhalt -->
-  <div class="content">
-    <!-- Hier kannst du dein eigenes HTML-Script einfügen -->
-    <h1>Willkommen auf meiner Webseite</h1>
-    <p>Dies ist der Inhalt der Seite.</p>
+  <div class="content" id="pageContent">
+    <!-- Hier wird der Seiteninhalt dynamisch geladen -->
   </div>
+  
+  <script>
+    function loadContent(page) {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("pageContent").innerHTML = this.responseText;
+          history.pushState({ page: page }, "", page + ".html");
+        }
+      };
+      xhttp.open("GET", page + ".html", true);
+      xhttp.send();
+    }
+
+    // Navigationsmenü basierend auf dem Browserverlauf aktualisieren
+    window.onpopstate = function(event) {
+      if (event.state && event.state.page) {
+        loadContent(event.state.page);
+      }
+    };
+
+    // Beim Laden der Seite aktuellen Browserverlauf überprüfen
+    window.onload = function() {
+      var currentPage = window.location.pathname.split("/").pop().split(".")[0];
+      loadContent(currentPage);
+    };
+  </script>
 </body>
 </html>
