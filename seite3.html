@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+        background-color: #333333;
+        color: #ffffff;
+        font-family: Arial, sans-serif;
+        padding-top: 50px;
+    }
+
+    .container {
+        background-color: #222222;
+        border-radius: 5px;
+        padding: 20px;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-control {
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .btn-primary {
+        font-size: 16px;
+        background-color: #ff9900;
+        border-color: #ff9900;
+    }
+
+    .btn-primary:hover {
+        background-color: #e67e00;
+        border-color: #e67e00;
+    }
+
+    #result-container {
+        display: none;
+        margin-top: 30px;
+    }
+
+    .result-label {
+        font-weight: bold;
+    }
+
+    .result-value {
+        color: #00cc00;
+        font-weight: bold;
+    }
+  </style>
+  <script>
+    function calculate() {
+      var schwarzgeld = parseFloat(document.getElementById("schwarzgeld").value);
+      
+      var steuern = schwarzgeld * 0.1;
+      var gruengeld = (schwarzgeld - steuern) * (1 - 0.1);
+      var waschmuenzen = Math.ceil(schwarzgeld / 1e6);
+      var waschmuenzenKosten = waschmuenzen * 50000;
+      var waschzeit = calculateWaschzeit(waschmuenzen);
+      var staatsteuern = steuern.toFixed(0);
+      var provision = ((schwarzgeld - steuern) * 0.1).toFixed(0);
+
+      gruengeld -= waschmuenzenKosten;
+
+      document.getElementById("gruengeld").textContent = numberWithCommas(gruengeld.toFixed(0));
+      document.getElementById("waschmuenzen").textContent = waschmuenzen;
+      document.getElementById("waschmuenzenKosten").textContent = numberWithCommas(waschmuenzenKosten.toFixed(0));
+      document.getElementById("staatsteuern").textContent = numberWithCommas(staatsteuern);
+      document.getElementById("provision").textContent = numberWithCommas(provision);
+      document.getElementById("waschzeit").textContent = waschzeit;
+      
+      var container = document.getElementById("result-container");
+      container.style.display = "block";
+    }
+
+    function calculateWaschzeit(waschmuenzen) {
+      var waschmaschinenAnzahl = 3;
+      var waschvorgangDauer = 12; // Minuten pro Waschvorgang
+      var waschvorgangGesamtzeit = waschmuenzen * waschvorgangDauer;
+      var waschmaschinenGesamtzeit = Math.ceil(waschmuenzen / waschmaschinenAnzahl) * waschvorgangDauer;
+
+      var stunden = Math.floor(waschmaschinenGesamtzeit / 60);
+      var minuten = waschmaschinenGesamtzeit % 60;
+
+      return stunden + " Stunden " + minuten + " Minuten";
+    }
+
+    function numberWithCommas(number) {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Sopranos-Waschrechner</h1>
+    <div class="form-group">
+      <label for="schwarzgeld">Schwarzgeldsumme angeben:</label>
+      <input type="number" id="schwarzgeld" min="0" step="1" class="form-control">
+    </div>
+    <button onclick="calculate()" class="btn btn-primary">Berechnen</button>
+
+    <div id="result-container">
+      <p><font color="red">Zuerst gehen 10 % von dem Schwarzgeld an den Staat.</font></p>
+      <p><span class="result-label">Staatssteuer:</span> <span id="staatsteuern" class="result-value"></span></p>
+      <p><font color="red">Danach werden die folgenden Abzüge vom Grüngeld gemacht:</font></p>
+      <p><span class="result-label">10% Sopranos Steuer:</span> <span id="provision" class="result-value"></span></p>
+      <p><span class="result-label">Kosten der Waschmünzen:</span> <span id="waschmuenzenKosten" class="result-value"></span></p>
+      <p><font color="red">Was benötigt wird:</font></p>
+      <p><span class="result-label">Waschmünzen:</span> <span id="waschmuenzen" class="result-value"></span></p>
+      <p><span class="result-label">Zeit zum Waschen:</span> <span id="waschzeit" class="result-value"></span></p>
+      <p><font color="red">Das ist die Summe, die der Zivilist erhält:</font></p>
+      <p><span class="result-label">Grüngeld nach Abzügen:</span> <span id="gruengeld" class="result-value"></span></p>
+    </div>
+
+    <div class="created-by">by Damian White</div>
+  </div>
+</body>
+</html>
