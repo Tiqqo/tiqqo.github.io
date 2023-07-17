@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tütchen Rechner</title>
+    <script>
+        function calculate() {
+            var preisProBlatt = parseFloat(document.getElementById("preisProBlatt").value);
+            var mengeBlätter = parseInt(document.getElementById("mengeBlätter").value);
+
+            var tütchenProBlatt = Math.floor(mengeBlätter / 2);
+            var herstellungszeitInSekunden = tütchenProBlatt * 6;
+
+            var herstellungszeitInStunden = Math.floor(herstellungszeitInSekunden / 3600);
+            var restlicheSekunden = herstellungszeitInSekunden % 3600;
+            var herstellungszeitInMinuten = Math.floor(restlicheSekunden / 60);
+
+            var verkaufspreisProTütchen = 435;
+            var einkaufspreisProTütchen = preisProBlatt * 2;
+
+            var gewinnGrüngeld = (verkaufspreisProTütchen - einkaufspreisProTütchen) * tütchenProBlatt * 0.9;
+            var gewinnSchwarzgeld = (verkaufspreisProTütchen - einkaufspreisProTütchen) * tütchenProBlatt;
+
+            document.getElementById("ergebnisTütchen").textContent = "Anzahl der Tütchen: " + tütchenProBlatt;
+            document.getElementById("ergebnisHerstellungszeit").textContent = "Herstellungszeit: " + herstellungszeitInStunden + " Stunden " + herstellungszeitInMinuten + " Minuten";
+            document.getElementById("ergebnisGrüngeld").textContent = "Gewinn in GrünGeld: " + gewinnGrüngeld;
+            document.getElementById("ergebnisSchwarzgeld").textContent = "Gewinn in SchwarzGeld: " + gewinnSchwarzgeld;
+        }
+    </script>
+</head>
+<body>
+    <h1>Tütchen Rechner</h1>
+    <label for="preisProBlatt">Preis pro Blatt:</label>
+    <input type="number" id="preisProBlatt">
+    <br><br>
+    <label for="mengeBlätter">Menge an Blättern:</label>
+    <input type="number" id="mengeBlätter">
+    <br><br>
+    <button onclick="calculate()">Berechnen</button>
+    <br><br>
+    <p id="ergebnisTütchen"></p>
+    <p id="ergebnisHerstellungszeit"></p>
+    <p id="ergebnisGrüngeld"></p>
+    <p id="ergebnisSchwarzgeld"></p>
+</body>
+</html>
