@@ -1,155 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Sopranos-Waschrechner</title>
+  <title>Meine Webseite</title>
   <style>
+    /* Globale Stile */
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
     }
-
-    .container {
+    
+    /* Navigationsmenü */
+    .navbar {
+      background-color: #333;
       text-align: center;
+      padding: 20px 0;
+    }
+    
+    .navbar a {
+      color: #fff;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      margin: 0 10px; /* Hier kannst du den Wert anpassen */
+    }
+    
+    .navbar a:hover {
+      background-color: #ddd;
+      color: #000;
+    }
+    
+    /* Seiteninhalt */
+    .content {
       padding: 20px;
-      background-color: #ffffff;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-      margin-top: 0;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    input[type="number"] {
-      width: 200px;
-      padding: 5px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-    }
-
-    button {
-      padding: 10px 20px;
-      background-color: #4caf50;
-      color: #ffffff;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-
-    h2 {
-      margin-top: 20px;
-    }
-
-    p {
-      margin-bottom: 5px;
-    }
-
-    .result-label {
-      font-weight: bold;
-    }
-
-    .result-value {
-      color: green;
-      position: relative;
-    }
-
-    .result-value::after {
-      content: " $";
-      display: none;
-    }
-
-    .show-dollar .result-value::after {
-      display: inline-block;
-    }
-
-    .no-dollar::after {
-      content: "";
-    }
-
-    .created-by {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      color: black;
     }
   </style>
-  <script>
-    function calculate() {
-      var schwarzgeld = parseFloat(document.getElementById("schwarzgeld").value);
-      
-      var steuern = schwarzgeld * 0.1;
-      var gruengeld = (schwarzgeld - steuern) * (1 - 0.1);
-      var waschmuenzen = Math.ceil(schwarzgeld / 1e6);
-      var waschmuenzenKosten = waschmuenzen * 50000;
-      var waschzeit = calculateWaschzeit(waschmuenzen);
-      var staatsteuern = steuern.toFixed(0);
-      var provision = ((schwarzgeld - steuern) * 0.1).toFixed(0);
-
-      gruengeld -= waschmuenzenKosten;
-
-      document.getElementById("gruengeld").textContent = numberWithCommas(gruengeld.toFixed(0));
-      document.getElementById("waschmuenzen").textContent = waschmuenzen;
-      document.getElementById("waschmuenzenKosten").textContent = numberWithCommas(waschmuenzenKosten.toFixed(0));
-      document.getElementById("staatsteuern").textContent = numberWithCommas(staatsteuern);
-      document.getElementById("provision").textContent = numberWithCommas(provision);
-      document.getElementById("waschzeit").textContent = waschzeit;
-      
-      var container = document.getElementById("result-container");
-      container.classList.add("show-dollar");
-      document.getElementById("waschmuenzen").classList.add("no-dollar");
-    }
-
-    function calculateWaschzeit(waschmuenzen) {
-      var waschmaschinenAnzahl = 3;
-      var waschvorgangDauer = 12; // Minuten pro Waschvorgang
-      var waschvorgangGesamtzeit = waschmuenzen * waschvorgangDauer;
-      var waschmaschinenGesamtzeit = Math.ceil(waschmuenzen / waschmaschinenAnzahl) * waschvorgangDauer;
-
-      var stunden = Math.floor(waschmaschinenGesamtzeit / 60);
-      var minuten = waschmaschinenGesamtzeit % 60;
-
-      return stunden + " Stunden " + minuten + " Minuten";
-    }
-
-    function numberWithCommas(number) {
-      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    }
-  </script>
 </head>
 <body>
-  <div class="container">
-    <h1>Sopranos-Waschrechner</h1>
-    <label for="schwarzgeld">Schwarzgeldsumme angeben:</label>
-    <input type="number" id="schwarzgeld" min="0" step="1">
-    <button onclick="calculate()">Berechnen</button>
-
-    <h2></h2>
-    <div id="result-container">
-	  <font color="red">Zuerst gehen 10 % von dem Schwarzgeld an den Staat.</font>
-	  <p><span class="result-label">Staatssteuer:</span> <span id="staatsteuern" class="result-value"></span></p>
-	  <p><span class="result-label">____________________________________________</span> <span id="prov´´on" class="res´´value"></span></p>
-      <font color="red">Danach werden die folgenden Abzüge vom Grüngeld gemacht:</font>
-      <p><span class="result-label">10% Sopranos Steuer:</span> <span id="provision" class="result-value"></span></p>
-	  <p><span class="result-label">Kosten der Waschmünzen:</span> <span id="waschmuenzenKosten" class="result-value"></span></p>
-	  <p><span class="result-label">____________________________________________</span> <span id="prov´´on" class="res´´value"></span></p>
-	  <font color="red">Was benötigt wird:</font>
-	  <p><span class="result-label">Waschmünzen:</span> <span id="waschmuenzen" class="result-value no-dollar"></span></p>
-      <p><span class="result-label">Zeit zum Waschen:</span> <span id="waschzeit" class="result-value no-dollar"></span></p>
-	  <p><span class="result-label">____________________________________________</span> <span id="prov´´on" class="res´´value"></span></p>
-	  <font color="red">Das ist die Summe, die der Zivilist erhält:</font>
-      <p><span class="result-label">Grüngeld nach Abzügen:</span> <span id="gruengeld" class="result-value"></span></p>
-    </div>
-
-    <div class="created-by">by Damian White</div>
+  <!-- Navigationsmenü -->
+  <div class="navbar">
+    <a href="seite1.html">Geldwäsche-Rechner</a>
+    <a href="seite2.html">Kokain-Rechner</a>
+    <a href="seite3.html">Luftverkauf-Timer</a>
+    <a href="seite4.html">Seite 4</a>
+    <a href="seite5.html">Seite 5</a>
+  </div>
+  
+  <!-- Seiteninhalt -->
+  <div class="content">
+    <!-- Hier kannst du dein eigenes HTML-Script einfügen -->
+    <h1>Willkommen auf meiner Webseite</h1>
+    <p>Dies ist der Inhalt der Seite.</p>
   </div>
 </body>
 </html>
