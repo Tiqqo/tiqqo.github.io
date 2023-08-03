@@ -1,327 +1,152 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Navigation</title>
+  <title>LSD Herstellungsrechner</title>
   <style>
-    #nav {
-      background-color: #333;
+    body {
+      background-color: #1a1a1a;
       color: #fff;
-      padding: 10px;
+      font-family: Arial, sans-serif;
       text-align: center;
     }
 
-    #nav ul {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
+    #calculator {
+      width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+      background-color: #2d2d2d;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    #nav ul li {
+    #result {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: green;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .button {
       display: inline-block;
-      margin-right: 10px;
-    }
-
-    #nav ul li a {
-      display: block;
-      background-color: #555;
-      color: #fff;
       padding: 10px 20px;
-      text-decoration: none;
+      background-color: #ff8c00;
+      color: #fff;
       border: none;
       border-radius: 5px;
-      transition: background-color 0.3s ease;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      margin-right: 10px;
+      transition: transform 0.2s;
     }
 
-    #nav ul li a:hover {
-      background-color: #777;
+    .button:active {
+      transform: translateY(2px);
+      box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3);
     }
 
+    .button.active {
+      background-color: #ff4500;
+    }
 
-    .hidden {
-      display: none;
+    #inputField {
+      padding: 10px;
+      border: 2px solid #ff8c00;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      width: 80%;
     }
   </style>
 </head>
 <body>
-  <div id="nav">
-    <ul>
-      <li><a href="#page1">Geldwäsche-Rechner</a></li>
-      <li><a href="#page2">Kokain-Rechner</a></li>
-    </ul>
+  <div id="calculator">
+    <h1>LSD Herstellungsrechner</h1>
+
+    <!-- Rechner für den Gewinn -->
+    <div class="button-container">
+      <button class="button" id="price50" onclick="selectPrice(50)">Einkaufspreis $50</button>
+      <button class="button" id="price60" onclick="selectPrice(60)">Einkaufspreis $60</button>
+      <button class="button" id="price70" onclick="selectPrice(70)">Einkaufspreis $70</button>
+    </div>
+
+    <label for="inputField">Einkaufsmenge:</label>
+    <br>
+    <input type="number" id="inputField" placeholder="Einkaufsmenge" />
+
+    <div id="result">Gewinn: 0 $</div>
+    <div id="processingTime">Verarbeitungszeit: 0 Stunden, 0 Minuten, 0 Sekunden</div>
   </div>
 
-  <div id="content">
-    <div id="page1">
-      <html>
-<head>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <style>
-    body {
-        background-color: #333333;
-        color: #ffffff;
-        font-family: Arial, sans-serif;
-        padding-top: 50px;
-    }
-
-    .container {
-        background-color: #222222;
-        border-radius: 5px;
-        padding: 20px;
-        max-width: 500px;
-        margin: 0 auto;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-
-    .form-control {
-        border-radius: 4px;
-        font-size: 16px;
-    }
-
-    .btn-primary {
-        font-size: 16px;
-        background-color: #ff9900;
-        border-color: #ff9900;
-    }
-
-    .btn-primary:hover {
-        background-color: #e67e00;
-        border-color: #e67e00;
-    }
-
-    #result-container {
-        display: none;
-        margin-top: 30px;
-    }
-
-    .result-label {
-        font-weight: bold;
-    }
-
-    .result-value {
-        color: #00cc00;
-        font-weight: bold;
-    }
-  </style>
   <script>
-    function calculate() {
-      var schwarzgeld = parseFloat(document.getElementById("schwarzgeld").value);
-      
-      var steuern = schwarzgeld * 0.1;
-      var gruengeld = (schwarzgeld - steuern) * (1 - 0.1);
-      var waschmuenzen = Math.ceil(schwarzgeld / 1e6);
-      var waschmuenzenKosten = waschmuenzen * 50000;
-      var waschzeit = calculateWaschzeit(waschmuenzen);
-      var staatsteuern = steuern.toFixed(0);
-      var provision = ((schwarzgeld - steuern) * 0.1).toFixed(0);
+    let purchasePrice = 50; // Standard-Einkaufspreis auf $50 setzen
 
-      gruengeld -= waschmuenzenKosten;
-
-      document.getElementById("gruengeld").textContent = numberWithCommas(gruengeld.toFixed(0));
-      document.getElementById("waschmuenzen").textContent = waschmuenzen;
-      document.getElementById("waschmuenzenKosten").textContent = numberWithCommas(waschmuenzenKosten.toFixed(0));
-      document.getElementById("staatsteuern").textContent = numberWithCommas(staatsteuern);
-      document.getElementById("provision").textContent = numberWithCommas(provision);
-      document.getElementById("waschzeit").textContent = waschzeit;
-      
-      var container = document.getElementById("result-container");
-      container.style.display = "block";
+    // Funktion zum Auswählen des Einkaufspreises
+    function selectPrice(price) {
+      purchasePrice = price;
+      updateButtons();
+      calculateProfit();
     }
 
-    function calculateWaschzeit(waschmuenzen) {
-      var waschmaschinenAnzahl = 3;
-      var waschvorgangDauer = 12; // Minuten pro Waschvorgang
-      var waschvorgangGesamtzeit = waschmuenzen * waschvorgangDauer;
-      var waschmaschinenGesamtzeit = Math.ceil(waschmuenzen / waschmaschinenAnzahl) * waschvorgangDauer;
+    // Funktion zur Aktualisierung der Button-Auswahl
+    function updateButtons() {
+      document.getElementById("price50").classList.remove("active");
+      document.getElementById("price60").classList.remove("active");
+      document.getElementById("price70").classList.remove("active");
 
-      var stunden = Math.floor(waschmaschinenGesamtzeit / 60);
-      var minuten = waschmaschinenGesamtzeit % 60;
-
-      return stunden + " Stunden " + minuten + " Minuten";
+      switch (purchasePrice) {
+        case 50:
+          document.getElementById("price50").classList.add("active");
+          break;
+        case 60:
+          document.getElementById("price60").classList.add("active");
+          break;
+        case 70:
+          document.getElementById("price70").classList.add("active");
+          break;
+      }
     }
 
-    function numberWithCommas(number) {
+    // Funktion zur Berechnung des Gewinns und Verarbeitungszeit
+    function calculateProfit() {
+      const inputField = document.getElementById("inputField");
+      const quantity = parseInt(inputField.value) || 0;
+
+      const totalCost = purchasePrice * quantity;
+      const totalLSD = Math.floor(quantity / 2);
+      const totalRevenue = totalLSD * 350;
+      const profit = totalRevenue - totalCost;
+
+      const processingTimeInSeconds = totalLSD * 6; // Berechne Verarbeitungszeit basierend auf der Anzahl der LSD-Einheiten
+
+      const hours = Math.floor(processingTimeInSeconds / 3600);
+      const minutes = Math.floor((processingTimeInSeconds % 3600) / 60);
+      const seconds = processingTimeInSeconds % 60;
+
+      const formattedProfit = formatNumber(profit);
+
+      document.getElementById("result").textContent = `Gewinn: ${formattedProfit} $`;
+      document.getElementById(
+        "processingTime"
+      ).textContent = `Verarbeitungszeit: ${hours} Stunden, ${minutes} Minuten, ${seconds} Sekunden`;
+    }
+
+    // Funktion zum Formatieren von Zahlen in Tausenderschritten
+    function formatNumber(number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
-  </script>
-</head>
-<body>
-  <div class="container">
-    <h1 class="text-center">Geldwäsche-Rechner</h1>
-    <div class="form-group">
-      <label for="schwarzgeld">Schwarzgeldsumme angeben:</label>
-      <input type="number" id="schwarzgeld" min="0" step="1" class="form-control">
-    </div>
-    <button onclick="calculate()" class="btn btn-primary">Berechnen</button>
 
-    <div id="result-container">
-      <p><font color="red">Zuerst gehen 10 % von dem Schwarzgeld an den Staat.</font></p>
-      <p><span class="result-label">Staatssteuer:</span> <span id="staatsteuern" class="result-value"></span></p>
-      <p><font color="red">Danach werden die folgenden Abzüge vom Grüngeld gemacht:</font></p>
-      <p><span class="result-label">10% Sopranos Steuer:</span> <span id="provision" class="result-value"></span></p>
-      <p><span class="result-label">Kosten der Waschmünzen:</span> <span id="waschmuenzenKosten" class="result-value"></span></p>
-      <p><font color="red">Was benötigt wird:</font></p>
-      <p><span class="result-label">Waschmünzen:</span> <span id="waschmuenzen" class="result-value"></span></p>
-      <p><span class="result-label">Zeit zum Waschen:</span> <span id="waschzeit" class="result-value"></span></p>
-      <p><font color="red">Das ist die Summe, die der Zivilist erhält:</font></p>
-      <p><span class="result-label">Grüngeld nach Abzügen:</span> <span id="gruengeld" class="result-value"></span></p>
-    </div>
+    // Überwache Änderungen im Eingabefeld und aktualisiere den Gewinn
+    document.getElementById("inputField").addEventListener("input", calculateProfit);
 
-    
-  </div>
-</body>
-</html>
-
-      <h1></h1>
-      <p></p>
-    </div>
-
-    <div id="page2" class="hidden">
-      <html>
-<head>
-    <title>Tütchen Rechner</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <style>
-        body {
-            background-color: #333333;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            padding-top: 50px;
-        }
-
-        .container {
-            background-color: #222222;
-            border-radius: 5px;
-            padding: 20px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .form-control {
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
-        .btn-primary {
-            font-size: 16px;
-            background-color: #ff9900;
-            border-color: #ff9900;
-        }
-
-        .btn-primary:hover {
-            background-color: #e67e00;
-            border-color: #e67e00;
-        }
-
-        #ergebnisTütchen span,
-        #ergebnisHerstellungszeit span {
-            font-weight: bold;
-            color: #00cc00;
-        }
-
-        #ergebnisGrüngeld span,
-        #ergebnisSchwarzgeld span {
-            font-weight: bold;
-            color: #00cc00;
-        }
-    </style>
-    <script>
-        $(document).ready(function() {
-            $('#calculateBtn').click(function() {
-                var preisProBlatt = parseFloat($('#preisProBlatt').val());
-                var mengeBlätter = parseInt($('#mengeBlätter').val());
-
-                var tütchenProBlatt = Math.floor(mengeBlätter / 2);
-                var herstellungszeitInSekunden = tütchenProBlatt * 6;
-
-                var herstellungszeitInStunden = Math.floor(herstellungszeitInSekunden / 3600);
-                var restlicheSekunden = herstellungszeitInSekunden % 3600;
-                var herstellungszeitInMinuten = Math.floor(restlicheSekunden / 60);
-
-                var verkaufspreisProTütchen = 435;
-                var einkaufspreisProTütchen = preisProBlatt * 2;
-
-                var gewinnGrüngeld = (verkaufspreisProTütchen - einkaufspreisProTütchen) * tütchenProBlatt * 0.9;
-                var gewinnSchwarzgeld = (verkaufspreisProTütchen - einkaufspreisProTütchen) * tütchenProBlatt;
-
-                $('#ergebnisTütchen').text('Anzahl der Kokstütchen: ' + tütchenProBlatt);
-                $('#ergebnisHerstellungszeit').text('Verarbeitungszeit: ' + herstellungszeitInStunden + ' Stunden ' + herstellungszeitInMinuten + ' Minuten');
-                $('#ergebnisGrüngeld').html('Gewinn in Grüngeld: <span>' + formatCurrency(gewinnGrüngeld) + '</span>');
-                $('#ergebnisSchwarzgeld').html('Gewinn in Schwarzgeld: <span>' + formatCurrency(gewinnSchwarzgeld) + '</span>');
-            });
-        });
-
-        function formatCurrency(number) {
-            return number.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        }
-    </script>
-</head>
-<body>
-    <div class="container">
-        <h1 class="text-center">Kokain-Rechner</h1>
-        <div class="row justify-content-center">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label for="preisProBlatt">Preis pro Blatt:</label>
-                    <input type="number" id="preisProBlatt" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="mengeBlätter">Menge an Blättern:</label>
-                    <input type="number" id="mengeBlätter" class="form-control">
-                </div>
-                <div class="text-center">
-                    <button id="calculateBtn" class="btn btn-primary">Berechnen</button>
-                </div>
-                <br>
-                <p id="ergebnisTütchen">Anzahl der Kokstütchen:</p>
-                <p id="ergebnisHerstellungszeit">Verarbeitungszeit:</p>
-                <p id="ergebnisGrüngeld">Gewinn in Grüngeld:</p>
-                <p id="ergebnisSchwarzgeld">Gewinn in Schwarzgeld:</p>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
-
-      
-    </div>
-  </div>
-
-  <script>
-    function showPage(pageId) {
-      // Alle Seiten verstecken
-      var pages = document.querySelectorAll("#content > div");
-      for (var i = 0; i < pages.length; i++) {
-        pages[i].classList.add("hidden");
-      }
-
-      // Nur die ausgewählte Seite anzeigen
-      var selectedPage = document.querySelector("#" + pageId);
-      selectedPage.classList.remove("hidden");
-    }
-
-    // Beim Laden der Seite die erste Seite anzeigen
-    showPage("page1");
-
-    // Den Klick auf die Navigationslinks abfangen und entsprechende Seite anzeigen
-    var links = document.querySelectorAll("#nav a");
-    for (var i = 0; i < links.length; i++) {
-      links[i].addEventListener("click", function(event) {
-        event.preventDefault();
-        var pageId = this.getAttribute("href").substr(1);
-        showPage(pageId);
-      });
-    }
+    // Initialisiere die Button-Auswahl und berechne den Gewinn beim Laden der Seite
+    updateButtons();
+    calculateProfit();
   </script>
 </body>
 </html>
