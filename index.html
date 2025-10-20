@@ -1,152 +1,648 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-  <title>LSD-Rechner </title>
-  <style>
-    body {
-      background-color: #1a1a1a;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit Rechner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    #calculator {
-      width: 400px;
-      margin: 100px auto;
-      padding: 20px;
-      background-color: #2d2d2d;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+        }
 
-    #result {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 20px;
-      color: green;
-    }
+        .container {
+            background: linear-gradient(135deg, #1c1c1e 0%, #2a2a2c 100%);
+            border-radius: 20px;
+            padding: 48px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
 
-    .button-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 10px;
-    }
+        h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #0a84ff 0%, #64d2ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-    .button {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #ff8c00;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-      cursor: pointer;
-      margin-right: 10px;
-      transition: transform 0.2s;
-    }
+        h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #fff;
+        }
 
-    .button:active {
-      transform: translateY(2px);
-      box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3);
-    }
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
 
-    .button.active {
-      background-color: #ff4500;
-    }
+        .button {
+            background: linear-gradient(135deg, #0a84ff 0%, #0066cc 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 18px 32px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(10, 132, 255, 0.3);
+        }
 
-    #inputField {
-      padding: 10px;
-      border: 2px solid #ff8c00;
-      border-radius: 5px;
-      font-size: 16px;
-      margin-bottom: 10px;
-      width: 80%;
-    }
-  </style>
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(10, 132, 255, 0.5);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, #3a3a3c 0%, #2c2c2e 100%);
+            margin: 0 auto 30px auto;
+            display: block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .input-row input {
+            flex: 1;
+        }
+
+        .separator {
+            color: #8e8e93;
+            font-size: 0.95em;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #8e8e93;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            background: linear-gradient(135deg, #2c2c2e 0%, #1c1c1e 100%);
+            border: 1px solid #3a3a3c;
+            border-radius: 12px;
+            padding: 16px;
+            color: #fff;
+            font-size: 1em;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0a84ff;
+            box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .results {
+            margin-top: 32px;
+            background: linear-gradient(135deg, #2c2c2e 0%, #1c1c1e 100%);
+            border-radius: 12px;
+            padding: 24px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #3a3a3c;
+            transition: all 0.3s ease;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-row:hover {
+            background: rgba(58, 58, 60, 0.3);
+            padding-left: 12px;
+            padding-right: 12px;
+            border-radius: 8px;
+        }
+
+        .result-label {
+            color: #8e8e93;
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .profit-row {
+            background: linear-gradient(135deg, rgba(10, 132, 255, 0.1) 0%, rgba(10, 132, 255, 0.05) 100%);
+            padding: 16px 12px !important;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        .profit-positive {
+            color: #32d74b;
+            text-shadow: 0 0 10px rgba(50, 215, 75, 0.5);
+        }
+
+        .profit-negative {
+            color: #ff453a;
+            text-shadow: 0 0 10px rgba(255, 69, 58, 0.5);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .timer-box {
+            background: linear-gradient(135deg, #2c2c2e 0%, #1c1c1e 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .timer-title {
+            color: #8e8e93;
+            font-size: 0.95em;
+            font-weight: 500;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .timer-input-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .timer-input {
+            flex: 1;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, #0a84ff 0%, #0066cc 100%);
+            padding: 12px 24px;
+            font-size: 0.95em;
+            white-space: nowrap;
+        }
+
+        .timer-display {
+            font-size: 2.5em;
+            font-weight: 700;
+            text-align: center;
+            color: #0a84ff;
+            text-shadow: 0 0 20px rgba(10, 132, 255, 0.6);
+            margin: 20px 0;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .in-window {
+            color: #32d74b;
+            text-shadow: 0 0 20px rgba(50, 215, 75, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .skip-prompt {
+            color: #ffd60a;
+            text-shadow: 0 0 20px rgba(255, 214, 10, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .reset-button {
+            background: linear-gradient(135deg, #ff453a 0%, #cc3629 100%);
+            box-shadow: 0 4px 15px rgba(255, 69, 58, 0.3);
+            margin: 0 auto;
+            display: block;
+        }
+
+        .reset-button:hover {
+            box-shadow: 0 8px 25px rgba(255, 69, 58, 0.5);
+        }
+
+        .info-text {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(28, 28, 30, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            border-radius: 10px;
+            color: #8e8e93;
+            font-size: 0.9em;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .timer-input-row {
+                flex-direction: column;
+            }
+
+            .start-button {
+                width: 100%;
+            }
+
+            .info-text {
+                font-size: 0.75em;
+                padding: 8px 14px;
+                bottom: 10px;
+                left: 10px;
+            }
+
+            .timer-display {
+                font-size: 2em;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div id="calculator">
-    <h1>LSD-Rechner</h1>
+    <div class="container">
+        <!-- HAUPTMENÜ -->
+        <div id="mainMenu">
+            <h1>Profit Rechner</h1>
+            <div class="menu-buttons">
+                <button class="button" onclick="showPage('munition')">Munition</button>
+                <button class="button" onclick="showPage('tracker')">Tracker</button>
+            </div>
+        </div>
 
-    <!-- Rechner für den Gewinn -->
-    <div class="button-container">
-      <button class="button" id="price50" onclick="selectPrice(50)">Einkaufspreis $50</button>
-      <button class="button" id="price60" onclick="selectPrice(60)">Einkaufspreis $60</button>
-      <button class="button" id="price70" onclick="selectPrice(70)">Einkaufspreis $70</button>
+        <!-- RECHNER 1 (MUNITION) -->
+        <div id="munition" class="hidden">
+            <button class="button back-button" onclick="showPage('mainMenu')">← Zurück zum Menü</button>
+            <h2>Profit-Rechner</h2>
+            
+            <div class="input-group">
+                <label>Anzahl gekaufter Einheiten (Stück)</label>
+                <input type="number" id="anzahl" placeholder="z.B. 120">
+            </div>
+
+            <div class="input-row">
+                <div style="flex: 1;">
+                    <label>Gesamter Einkaufspreis</label>
+                    <input type="number" id="einkaufspreisGesamt" placeholder="z.B. 624000">
+                </div>
+                <div class="separator">oder</div>
+                <div style="flex: 1;">
+                    <label>Preis pro Kugel</label>
+                    <input type="number" id="einkaufspreisProKugel" placeholder="z.B. 5200">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div style="flex: 1;">
+                    <label>Verwaltungsgebühr</label>
+                    <input type="number" id="verwaltung" placeholder="z.B. 1234">
+                </div>
+                <div class="separator">und</div>
+                <div style="flex: 1;">
+                    <label>Bearbeitungsgebühr</label>
+                    <input type="number" id="bearbeitung" placeholder="z.B. 1234">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Verkaufspreis pro Stack</label>
+                <input type="number" id="verkaufspreis" placeholder="z.B. 285000">
+            </div>
+
+            <button class="button" onclick="berechnen()">Berechnen</button>
+
+            <div id="results" class="hidden results">
+                <div class="result-row">
+                    <span class="result-label">Anzahl Stacks:</span>
+                    <span class="result-value" id="resStacks"></span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Gesamte Gebühren:</span>
+                    <span class="result-value" id="resGebuehren"></span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Gesamter Erlös:</span>
+                    <span class="result-value" id="resErloés"></span>
+                </div>
+                <div class="result-row profit-row">
+                    <span class="result-label">Profit:</span>
+                    <span class="result-value" id="resProfit"></span>
+                </div>
+                <div class="result-row profit-row">
+                    <span class="result-label">Gewinnmarge:</span>
+                    <span class="result-value" id="resMarge"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRACKER -->
+        <div id="tracker" class="hidden">
+            <button class="button back-button" onclick="showPage('mainMenu')">← Zurück zum Menü</button>
+            <h2>Tracker</h2>
+
+            <div class="timer-box">
+                <div class="timer-title">Countdown</div>
+                <div class="timer-input-row">
+                    <input type="text" class="timer-input" id="timerInput1" placeholder="xx:51" maxlength="5">
+                    <button class="button start-button" onclick="startTimer(1)">Start</button>
+                </div>
+                <div class="timer-display" id="timerDisplay1">--:--</div>
+            </div>
+
+            <button class="button reset-button" onclick="resetAllTimers()">Reset</button>
+        </div>
     </div>
 
-    <label for="inputField">Wie viele Pilze werden gekauft?:</label>
-    <br>
-    <input type="number" id="inputField" placeholder="Einkaufsmenge" />
+    <div class="info-text">Erster Reset des Tages ab 08:50</div>
 
-    <div id="result">Gewinn: 0 $</div>
-    <div id="processingTime">Verarbeitungszeit: 0 Stunden, 0 Minuten, 0 Sekunden</div>
-  </div>
+    <script>
+        var currentPage = 'mainMenu';
+        var timers = {
+            1: { interval: null, targetTime: null, state: 'idle' }
+        };
 
-  <script>
-    let purchasePrice = 50; // Standard-Einkaufspreis auf $50 setzen
+        function showPage(page) {
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('munition').classList.add('hidden');
+            document.getElementById('tracker').classList.add('hidden');
+            document.getElementById(page).classList.remove('hidden');
+            currentPage = page;
+        }
 
-    // Funktion zum Auswählen des Einkaufspreises
-    function selectPrice(price) {
-      purchasePrice = price;
-      updateButtons();
-      calculateProfit();
-    }
+        function formatNumber(num) {
+            var rounded = Math.round(num);
+            return rounded.toLocaleString('de-DE');
+        }
 
-    // Funktion zur Aktualisierung der Button-Auswahl
-    function updateButtons() {
-      document.getElementById("price50").classList.remove("active");
-      document.getElementById("price60").classList.remove("active");
-      document.getElementById("price70").classList.remove("active");
+        function berechnen() {
+            var anzahl = parseFloat(document.getElementById('anzahl').value);
+            var einkaufspreisGesamt = parseFloat(document.getElementById('einkaufspreisGesamt').value);
+            var einkaufspreisProKugel = parseFloat(document.getElementById('einkaufspreisProKugel').value);
+            var verwaltung = parseFloat(document.getElementById('verwaltung').value);
+            var bearbeitung = parseFloat(document.getElementById('bearbeitung').value);
+            var verkaufspreis = parseFloat(document.getElementById('verkaufspreis').value);
 
-      switch (purchasePrice) {
-        case 50:
-          document.getElementById("price50").classList.add("active");
-          break;
-        case 60:
-          document.getElementById("price60").classList.add("active");
-          break;
-        case 70:
-          document.getElementById("price70").classList.add("active");
-          break;
-      }
-    }
+            if (isNaN(anzahl) || isNaN(verwaltung) || isNaN(bearbeitung) || isNaN(verkaufspreis)) {
+                alert('Bitte alle Pflichtfelder ausfüllen!');
+                return;
+            }
 
-    // Funktion zur Berechnung des Gewinns und Verarbeitungszeit
-    function calculateProfit() {
-      const inputField = document.getElementById("inputField");
-      const quantity = parseInt(inputField.value) || 0;
+            var einkaufspreis;
+            if (!isNaN(einkaufspreisGesamt)) {
+                einkaufspreis = einkaufspreisGesamt;
+            } else if (!isNaN(einkaufspreisProKugel)) {
+                einkaufspreis = einkaufspreisProKugel * anzahl;
+            } else {
+                alert('Bitte entweder Gesamteinkaufspreis oder Preis pro Kugel angeben!');
+                return;
+            }
 
-      const totalCost = purchasePrice * quantity;
-      const totalLSD = Math.floor(quantity / 2);
-      const totalRevenue = totalLSD * 350;
-      const profit = totalRevenue - totalCost;
+            var anzahlStacks = anzahl / 120;
+            var gesamtGebuehren = anzahlStacks * (verwaltung + bearbeitung);
+            var gesamtVerkauf = anzahlStacks * verkaufspreis;
+            var profit = gesamtVerkauf - einkaufspreis - gesamtGebuehren;
+            var gewinnmarge = (profit / einkaufspreis) * 100;
 
-      const processingTimeInSeconds = totalLSD * 6; // Berechne Verarbeitungszeit basierend auf der Anzahl der LSD-Einheiten
+            document.getElementById('resStacks').textContent = formatNumber(anzahlStacks);
+            document.getElementById('resGebuehren').textContent = formatNumber(gesamtGebuehren) + ' $';
+            document.getElementById('resErloés').textContent = formatNumber(gesamtVerkauf) + ' $';
+            
+            var profitElement = document.getElementById('resProfit');
+            var margeElement = document.getElementById('resMarge');
+            
+            var profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
+            profitElement.textContent = formatNumber(profit) + ' $';
+            profitElement.className = 'result-value ' + profitClass;
+            
+            margeElement.textContent = gewinnmarge.toFixed(2).replace('.', ',') + ' %';
+            margeElement.className = 'result-value ' + profitClass;
 
-      const hours = Math.floor(processingTimeInSeconds / 3600);
-      const minutes = Math.floor((processingTimeInSeconds % 3600) / 60);
-      const seconds = processingTimeInSeconds % 60;
+            document.getElementById('results').classList.remove('hidden');
+        }
 
-      const formattedProfit = formatNumber(profit);
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && currentPage === 'munition') {
+                berechnen();
+            }
+        });
 
-      document.getElementById("result").textContent = `Gewinn: ${formattedProfit} $`;
-      document.getElementById(
-        "processingTime"
-      ).textContent = `Verarbeitungszeit: ${hours} Stunden, ${minutes} Minuten, ${seconds} Sekunden`;
-    }
+        function playBeep() {
+            var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            for (var i = 0; i < 3; i++) {
+                setTimeout(function() {
+                    var oscillator = audioContext.createOscillator();
+                    var gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                }, i * 500);
+            }
+        }
 
-    // Funktion zum Formatieren von Zahlen in Tausenderschritten
-    function formatNumber(number) {
-      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    }
+        function startTimer(id) {
+            var input = document.getElementById('timerInput' + id).value.trim();
+            
+            if (!input) {
+                alert('Bitte eine Zeit eingeben!');
+                return;
+            }
+            
+            var match = input.match(/^(?:xx|(\d{1,2})):(\d{2})$/i);
+            
+            if (!match) {
+                alert('Bitte Format xx:mm verwenden (z.B. xx:51 oder 14:30)!');
+                return;
+            }
 
-    // Überwache Änderungen im Eingabefeld und aktualisiere den Gewinn
-    document.getElementById("inputField").addEventListener("input", calculateProfit);
+            var minutes = parseInt(match[2]);
+            
+            if (minutes > 59) {
+                alert('Ungültige Minuten! Wert: 0-59');
+                return;
+            }
+            
+            var now = new Date();
+            var spawnTime = new Date();
+            
+            if (match[1]) {
+                var hours = parseInt(match[1]);
+                if (hours > 23) {
+                    alert('Ungültige Stunden! Wert: 0-23');
+                    return;
+                }
+                spawnTime.setHours(hours, minutes, 0, 0);
+                
+                if (spawnTime > now) {
+                    spawnTime.setDate(spawnTime.getDate() - 1);
+                }
+            } else {
+                spawnTime.setMinutes(minutes, 0, 0);
+                spawnTime.setSeconds(0);
+                spawnTime.setMilliseconds(0);
+                
+                if (spawnTime > now) {
+                    spawnTime.setHours(spawnTime.getHours() - 1);
+                }
+            }
 
-    // Initialisiere die Button-Auswahl und berechne den Gewinn beim Laden der Seite
-    updateButtons();
-    calculateProfit();
-  </script>
+            var targetTime = new Date(spawnTime.getTime() + 40 * 60000);
+            var windowEndTime = new Date(targetTime.getTime() + 40 * 60000);
+
+            if (timers[id].interval) {
+                clearInterval(timers[id].interval);
+            }
+
+            timers[id].targetTime = targetTime;
+            timers[id].windowEndTime = windowEndTime;
+            timers[id].state = 'counting';
+            timers[id].beepPlayed = false;
+
+            updateTimer(id);
+            timers[id].interval = setInterval(function() { updateTimer(id); }, 1000);
+        }
+
+        function updateTimer(id) {
+            var now = new Date();
+            var display = document.getElementById('timerDisplay' + id);
+            
+            if (timers[id].state === 'counting') {
+                var diff = timers[id].targetTime - now;
+                
+                if (diff <= 0) {
+                    if (!timers[id].beepPlayed) {
+                        playBeep();
+                        timers[id].beepPlayed = true;
+                    }
+                    timers[id].state = 'window';
+                }
+                
+                if (diff > 0) {
+                    var hours = Math.floor(diff / 3600000);
+                    var minutes = Math.floor((diff % 3600000) / 60000);
+                    var seconds = Math.floor((diff % 60000) / 1000);
+                    
+                    display.textContent = 
+                        (hours < 10 ? '0' + hours : hours) + ':' +
+                        (minutes < 10 ? '0' + minutes : minutes) + ':' +
+                        (seconds < 10 ? '0' + seconds : seconds);
+                    display.className = 'timer-display';
+                }
+            }
+            
+            if (timers[id].state === 'window') {
+                var diff = timers[id].windowEndTime - now;
+                
+                if (diff <= 0) {
+                    timers[id].state = 'skip';
+                }
+                
+                if (diff > 0) {
+                    display.textContent = 'IN WINDOW';
+                    display.className = 'timer-display in-window';
+                }
+            }
+            
+            if (timers[id].state === 'skip') {
+                display.textContent = 'SKIP?';
+                display.className = 'timer-display skip-prompt';
+            }
+        }
+
+        function resetAllTimers() {
+            if (timers[1].interval) {
+                clearInterval(timers[1].interval);
+            }
+            timers[1] = { interval: null, targetTime: null, state: 'idle' };
+            document.getElementById('timerDisplay1').textContent = '--:--';
+            document.getElementById('timerDisplay1').className = 'timer-display';
+            document.getElementById('timerInput1').value = '';
+        }
+    </script>
 </body>
 </html>
