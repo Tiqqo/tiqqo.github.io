@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profit Rechner</title>
+    <title>Profit Calculator</title>
     <style>
         * {
             margin: 0;
@@ -95,20 +95,25 @@
 
         .input-row {
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             gap: 12px;
             margin-bottom: 24px;
         }
 
-        .input-row input {
+        .input-row > div {
             flex: 1;
         }
 
         .separator {
-            color: #8e8e93;
-            font-size: 0.95em;
-            font-weight: 500;
-            white-space: nowrap;
+    		color: #8e8e93;
+   		 font-size: 0.95em;
+    		font-weight: 500;
+    		white-space: nowrap;
+   		 margin-bottom: 0;
+    		display: flex;
+    		align-items: center;
+    		justify-content: center;
+    		padding-bottom: 16px;
         }
 
         label {
@@ -225,8 +230,8 @@
 
         .timer-title {
             color: #8e8e93;
-            font-size: 0.95em;
-            font-weight: 500;
+            font-size: 1.1em;
+            font-weight: 600;
             margin-bottom: 16px;
             text-align: center;
         }
@@ -287,24 +292,12 @@
             box-shadow: 0 4px 15px rgba(255, 69, 58, 0.3);
             margin: 0 auto;
             display: block;
+            padding: 12px 24px;
+            font-size: 0.9em;
         }
 
         .reset-button:hover {
             box-shadow: 0 8px 25px rgba(255, 69, 58, 0.5);
-        }
-
-        .info-text {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(28, 28, 30, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 12px 20px;
-            border-radius: 10px;
-            color: #8e8e93;
-            font-size: 0.9em;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         @media (max-width: 768px) {
@@ -328,13 +321,6 @@
                 width: 100%;
             }
 
-            .info-text {
-                font-size: 0.75em;
-                padding: 8px 14px;
-                bottom: 10px;
-                left: 10px;
-            }
-
             .timer-display {
                 font-size: 2em;
             }
@@ -343,109 +329,121 @@
 </head>
 <body>
     <div class="container">
-        <!-- HAUPTMENÜ -->
+        <!-- MAIN MENU -->
         <div id="mainMenu">
-            <h1>Profit Rechner</h1>
+            <h1>Profit Calculator</h1>
             <div class="menu-buttons">
-                <button class="button" onclick="showPage('munition')">Munition</button>
+                <button class="button" onclick="showPage('ammo')">Calculator</button>
                 <button class="button" onclick="showPage('tracker')">Tracker</button>
             </div>
         </div>
 
-        <!-- RECHNER 1 (MUNITION) -->
-        <div id="munition" class="hidden">
-            <button class="button back-button" onclick="showPage('mainMenu')">← Zurück zum Menü</button>
-            <h2>Profit-Rechner</h2>
+        <!-- CALCULATOR (AMMUNITION) -->
+        <div id="ammo" class="hidden">
+            <button class="button back-button" onclick="showPage('mainMenu')">← Back to Menu</button>
+            <h2>Arena Breakout: Infinite</h2>
             
             <div class="input-group">
-                <label>Anzahl gekaufter Einheiten (Stück)</label>
-                <input type="number" id="anzahl" placeholder="z.B. 120">
+                <label>Ammunition Quantity (Pieces)</label>
+                <input type="number" id="amount" placeholder="Input Bought Quantity">
             </div>
 
             <div class="input-row">
-                <div style="flex: 1;">
-                    <label>Gesamter Einkaufspreis</label>
-                    <input type="number" id="einkaufspreisGesamt" placeholder="z.B. 624000">
+                <div>
+                    <label>Total Purchase Price</label>
+                    <input type="number" id="totalPurchase" placeholder="e.g. 26480000" oninput="updatePriceFields('total')">
                 </div>
-                <div class="separator">oder</div>
-                <div style="flex: 1;">
-                    <label>Preis pro Kugel</label>
-                    <input type="number" id="einkaufspreisProKugel" placeholder="z.B. 5200">
-                </div>
-            </div>
-
-            <div class="input-row">
-                <div style="flex: 1;">
-                    <label>Verwaltungsgebühr</label>
-                    <input type="number" id="verwaltung" placeholder="z.B. 1234">
-                </div>
-                <div class="separator">und</div>
-                <div style="flex: 1;">
-                    <label>Bearbeitungsgebühr</label>
-                    <input type="number" id="bearbeitung" placeholder="z.B. 1234">
+                <div class="separator">or</div>
+                <div>
+                    <label>Price per Bullet</label>
+                    <input type="number" id="pricePerBullet" placeholder="e.g. 5200" oninput="updatePriceFields('per')">
                 </div>
             </div>
 
             <div class="input-group">
-                <label>Verkaufspreis pro Stack</label>
-                <input type="number" id="verkaufspreis" placeholder="z.B. 285000">
+                <label>Handling Fee </label>
+                <input type="number" id="managementFee" placeholder="e.g. 12480">
             </div>
 
-            <button class="button" onclick="berechnen()">Berechnen</button>
+            <div class="input-group">
+                <label>Selling Price per Stack</label>
+                <input type="number" id="sellingPrice" placeholder="The price after the Market fees!">
+            </div>
+
+            <button class="button" onclick="calculate()" style="display: block; margin: 0 auto;">Calculate</button>
 
             <div id="results" class="hidden results">
                 <div class="result-row">
-                    <span class="result-label">Anzahl Stacks:</span>
+                    <span class="result-label">Number of Stacks:</span>
                     <span class="result-value" id="resStacks"></span>
                 </div>
                 <div class="result-row">
-                    <span class="result-label">Gesamte Gebühren:</span>
-                    <span class="result-value" id="resGebuehren"></span>
+                    <span class="result-label">Total Fees:</span>
+                    <span class="result-value" id="resFees"></span>
                 </div>
                 <div class="result-row">
-                    <span class="result-label">Gesamter Erlös:</span>
-                    <span class="result-value" id="resErloés"></span>
+                    <span class="result-label">Total Revenue:</span>
+                    <span class="result-value" id="resRevenue"></span>
                 </div>
                 <div class="result-row profit-row">
                     <span class="result-label">Profit:</span>
                     <span class="result-value" id="resProfit"></span>
                 </div>
                 <div class="result-row profit-row">
-                    <span class="result-label">Gewinnmarge:</span>
-                    <span class="result-value" id="resMarge"></span>
+                    <span class="result-label">Profit Margin:</span>
+                    <span class="result-value" id="resMargin"></span>
                 </div>
             </div>
         </div>
 
         <!-- TRACKER -->
         <div id="tracker" class="hidden">
-            <button class="button back-button" onclick="showPage('mainMenu')">← Zurück zum Menü</button>
-            <h2>Tracker</h2>
+            <button class="button back-button" onclick="showPage('mainMenu')">← Back to Menu</button>
+            <h2>Respawn Tracker</h2>
 
             <div class="timer-box">
-                <div class="timer-title">Countdown</div>
+                <div class="timer-title">BS Ammunition</div>
                 <div class="timer-input-row">
                     <input type="text" class="timer-input" id="timerInput1" placeholder="xx:51" maxlength="5">
                     <button class="button start-button" onclick="startTimer(1)">Start</button>
                 </div>
                 <div class="timer-display" id="timerDisplay1">--:--</div>
+                <button class="button reset-button" onclick="resetTimer(1)">Reset</button>
             </div>
 
-            <button class="button reset-button" onclick="resetAllTimers()">Reset</button>
+            <div class="timer-box">
+                <div class="timer-title">995 Ammunition</div>
+                <div class="timer-input-row">
+                    <input type="text" class="timer-input" id="timerInput2" placeholder="xx:51" maxlength="5">
+                    <button class="button start-button" onclick="startTimer(2)">Start</button>
+                </div>
+                <div class="timer-display" id="timerDisplay2">--:--</div>
+                <button class="button reset-button" onclick="resetTimer(2)">Reset</button>
+            </div>
+
+            <div class="timer-box">
+                <div class="timer-title">AP Ammunition</div>
+                <div class="timer-input-row">
+                    <input type="text" class="timer-input" id="timerInput3" placeholder="xx:51" maxlength="5">
+                    <button class="button start-button" onclick="startTimer(3)">Start</button>
+                </div>
+                <div class="timer-display" id="timerDisplay3">--:--</div>
+                <button class="button reset-button" onclick="resetTimer(3)">Reset</button>
+            </div>
         </div>
     </div>
-
-    <div class="info-text">Erster Reset des Tages ab 08:50</div>
 
     <script>
         var currentPage = 'mainMenu';
         var timers = {
-            1: { interval: null, targetTime: null, state: 'idle' }
+            1: { interval: null, targetTime: null, windowEndTime: null, state: 'idle', beepPlayed: false },
+            2: { interval: null, targetTime: null, windowEndTime: null, state: 'idle', beepPlayed: false },
+            3: { interval: null, targetTime: null, windowEndTime: null, state: 'idle', beepPlayed: false }
         };
 
         function showPage(page) {
             document.getElementById('mainMenu').classList.add('hidden');
-            document.getElementById('munition').classList.add('hidden');
+            document.getElementById('ammo').classList.add('hidden');
             document.getElementById('tracker').classList.add('hidden');
             document.getElementById(page).classList.remove('hidden');
             currentPage = page;
@@ -456,55 +454,76 @@
             return rounded.toLocaleString('de-DE');
         }
 
-        function berechnen() {
-            var anzahl = parseFloat(document.getElementById('anzahl').value);
-            var einkaufspreisGesamt = parseFloat(document.getElementById('einkaufspreisGesamt').value);
-            var einkaufspreisProKugel = parseFloat(document.getElementById('einkaufspreisProKugel').value);
-            var verwaltung = parseFloat(document.getElementById('verwaltung').value);
-            var bearbeitung = parseFloat(document.getElementById('bearbeitung').value);
-            var verkaufspreis = parseFloat(document.getElementById('verkaufspreis').value);
-
-            if (isNaN(anzahl) || isNaN(verwaltung) || isNaN(bearbeitung) || isNaN(verkaufspreis)) {
-                alert('Bitte alle Pflichtfelder ausfüllen!');
+        function updatePriceFields(source) {
+            var amount = parseFloat(document.getElementById('amount').value);
+            
+            if (isNaN(amount) || amount <= 0) {
                 return;
             }
 
-            var einkaufspreis;
-            if (!isNaN(einkaufspreisGesamt)) {
-                einkaufspreis = einkaufspreisGesamt;
-            } else if (!isNaN(einkaufspreisProKugel)) {
-                einkaufspreis = einkaufspreisProKugel * anzahl;
+            if (source === 'total') {
+                var totalPurchase = parseFloat(document.getElementById('totalPurchase').value);
+                if (!isNaN(totalPurchase) && totalPurchase > 0) {
+                    var pricePerBullet = totalPurchase / amount;
+                    document.getElementById('pricePerBullet').value = pricePerBullet.toFixed(2);
+                }
+            } else if (source === 'per') {
+                var pricePerBullet = parseFloat(document.getElementById('pricePerBullet').value);
+                if (!isNaN(pricePerBullet) && pricePerBullet > 0) {
+                    var totalPurchase = pricePerBullet * amount;
+                    document.getElementById('totalPurchase').value = totalPurchase.toFixed(2);
+                }
+            }
+        }
+
+        function calculate() {
+            var amount = parseFloat(document.getElementById('amount').value);
+            var totalPurchase = parseFloat(document.getElementById('totalPurchase').value);
+            var pricePerBullet = parseFloat(document.getElementById('pricePerBullet').value);
+            var managementFee = parseFloat(document.getElementById('managementFee').value);
+            var sellingPrice = parseFloat(document.getElementById('sellingPrice').value);
+
+            if (isNaN(amount) || isNaN(managementFee) || isNaN(sellingPrice)) {
+                alert('Please fill in all required fields!');
+                return;
+            }
+
+            var purchasePrice;
+            if (!isNaN(totalPurchase)) {
+                purchasePrice = totalPurchase;
+            } else if (!isNaN(pricePerBullet)) {
+                purchasePrice = pricePerBullet * amount;
             } else {
-                alert('Bitte entweder Gesamteinkaufspreis oder Preis pro Kugel angeben!');
+                alert('Please enter either total purchase price or price per bullet!');
                 return;
             }
 
-            var anzahlStacks = anzahl / 120;
-            var gesamtGebuehren = anzahlStacks * (verwaltung + bearbeitung);
-            var gesamtVerkauf = anzahlStacks * verkaufspreis;
-            var profit = gesamtVerkauf - einkaufspreis - gesamtGebuehren;
-            var gewinnmarge = (profit / einkaufspreis) * 100;
+            var numberOfStacks = amount / 120;
+            var totalFees = numberOfStacks * managementFee;
+            var totalRevenue = numberOfStacks * sellingPrice;
+            var profit = totalRevenue - purchasePrice - totalFees;
+            var profitMargin = (profit / purchasePrice) * 100;
 
-            document.getElementById('resStacks').textContent = formatNumber(anzahlStacks);
-            document.getElementById('resGebuehren').textContent = formatNumber(gesamtGebuehren) + ' $';
-            document.getElementById('resErloés').textContent = formatNumber(gesamtVerkauf) + ' $';
+            document.getElementById('resStacks').textContent = formatNumber(numberOfStacks);
+            document.getElementById('resFees').textContent = formatNumber(totalFees) + ' $';
+            document.getElementById('resRevenue').textContent = formatNumber(totalRevenue) + ' $';
             
             var profitElement = document.getElementById('resProfit');
-            var margeElement = document.getElementById('resMarge');
+            var marginElement = document.getElementById('resMargin');
             
             var profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
             profitElement.textContent = formatNumber(profit) + ' $';
             profitElement.className = 'result-value ' + profitClass;
             
-            margeElement.textContent = gewinnmarge.toFixed(2).replace('.', ',') + ' %';
-            margeElement.className = 'result-value ' + profitClass;
+            marginElement.textContent = profitMargin.toFixed(2) + ' %';
+            marginElement.className = 'result-value ' + profitClass;
 
             document.getElementById('results').classList.remove('hidden');
         }
 
         document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && currentPage === 'munition') {
-                berechnen();
+            if (e.key === 'Enter' && currentPage === 'ammo') {
+                calculate();
             }
         });
 
@@ -529,45 +548,45 @@
             var input = document.getElementById('timerInput' + id).value.trim();
             
             if (!input) {
-                alert('Bitte eine Zeit eingeben!');
+                alert('Please enter a time!');
                 return;
             }
             
-            var match = input.match(/^(?:xx|(\d{1,2})):(\d{2})$/i);
+            var match = input.match(/^(xx|\d{1,2}):(\d{2})$/i);
             
             if (!match) {
-                alert('Bitte Format xx:mm verwenden (z.B. xx:51 oder 14:30)!');
+                alert('Please use format xx:mm (e.g. xx:51 or 14:30)!');
                 return;
             }
 
             var minutes = parseInt(match[2]);
             
             if (minutes > 59) {
-                alert('Ungültige Minuten! Wert: 0-59');
+                alert('Invalid minutes! Value: 0-59');
                 return;
             }
             
             var now = new Date();
             var spawnTime = new Date();
             
-            if (match[1]) {
-                var hours = parseInt(match[1]);
-                if (hours > 23) {
-                    alert('Ungültige Stunden! Wert: 0-23');
-                    return;
-                }
-                spawnTime.setHours(hours, minutes, 0, 0);
-                
-                if (spawnTime > now) {
-                    spawnTime.setDate(spawnTime.getDate() - 1);
-                }
-            } else {
+            if (match[1].toLowerCase() === 'xx') {
                 spawnTime.setMinutes(minutes, 0, 0);
                 spawnTime.setSeconds(0);
                 spawnTime.setMilliseconds(0);
                 
                 if (spawnTime > now) {
                     spawnTime.setHours(spawnTime.getHours() - 1);
+                }
+            } else {
+                var hours = parseInt(match[1]);
+                if (hours > 23) {
+                    alert('Invalid hours! Value: 0-23');
+                    return;
+                }
+                spawnTime.setHours(hours, minutes, 0, 0);
+                
+                if (spawnTime > now) {
+                    spawnTime.setDate(spawnTime.getDate() - 1);
                 }
             }
 
@@ -634,14 +653,20 @@
             }
         }
 
-        function resetAllTimers() {
-            if (timers[1].interval) {
-                clearInterval(timers[1].interval);
+        function resetTimer(id) {
+            if (timers[id].interval) {
+                clearInterval(timers[id].interval);
             }
-            timers[1] = { interval: null, targetTime: null, state: 'idle' };
-            document.getElementById('timerDisplay1').textContent = '--:--';
-            document.getElementById('timerDisplay1').className = 'timer-display';
-            document.getElementById('timerInput1').value = '';
+            timers[id] = {
+                interval: null,
+                targetTime: null,
+                windowEndTime: null,
+                state: 'idle',
+                beepPlayed: false
+            };
+            document.getElementById('timerDisplay' + id).textContent = '--:--';
+            document.getElementById('timerDisplay' + id).className = 'timer-display';
+            document.getElementById('timerInput' + id).value = '';
         }
     </script>
 </body>
